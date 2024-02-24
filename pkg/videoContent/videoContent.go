@@ -2,7 +2,10 @@ package videoContent
 
 type VideoContent struct {
 	ContentUri   string
-	Second       int
+	StartHour    int
+	StartMinute  int
+	StartSecond  int
+	Duration     int
 	isBackground bool
 	Layer        int
 	Scale        float32
@@ -34,6 +37,7 @@ func GetLayerOneCount(videoContents []VideoContent) int {
 	return count
 }
 
+// ValidateContent TODO: Could be improved by adding more validation rules
 func ValidateContent(videoContents []VideoContent) bool {
 	return GetBackgroundContentCount(videoContents) == 1 && GetLayerOneCount(videoContents) == 1
 }
