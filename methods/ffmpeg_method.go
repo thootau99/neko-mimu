@@ -17,12 +17,12 @@ func ImageToVideoWithSecond(imagePath string, second int) {
 }
 
 func OverlayVideoOnVideo(frontVideoPath string, backgroundVideoPath string, startSecond int) {
-	overlay := ffmpeg.Input(frontVideoPath)
+	overlay := ffmpeg.Input(frontVideoPath).Filter("colorkey", ffmpeg.Args{"0x4fff00:0.1:0.2"})
 	err := ffmpeg.Filter(
 		[]*ffmpeg.Stream{
 			ffmpeg.Input(backgroundVideoPath),
 			overlay,
-		}, "overlay", ffmpeg.Args{}, ffmpeg.KwArgs{"enable": "gte(t,1)", "colorkey": "0x3BBD1E"}).
+		}, "overlay", ffmpeg.Args{"1:1"}, ffmpeg.KwArgs{"enable": "gte(t,1)"}).
 		Output("./output/out1.mp4").OverWriteOutput().ErrorToStdOut().Run()
 	if nil != err {
 		log.Fatal(err)
