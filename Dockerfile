@@ -10,3 +10,4 @@ WORKDIR /go/src/github.com/thootau/neko-mimu
 COPY . .
 
 RUN go get -u github.com/u2takey/ffmpeg-go
+RUN go get -u github.com/u2takey/go-utils/uuid
