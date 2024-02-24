@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    command: sh
+    tty: true
+    volumes:
+      - .:/go/src/github.com/thootau/neko-mimu
+    environment:
+      - GOPATH=/go
