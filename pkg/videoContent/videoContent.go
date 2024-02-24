@@ -1,7 +1,7 @@
 package videoContent
 
 type VideoContent struct {
-	imageUri     string
+	contentUri   string
 	second       int
 	isBackground bool
 	layer        int
