@@ -1,10 +1,11 @@
 package videoContent
 
+import "time"
+
 type VideoContent struct {
 	ContentUri   string
-	StartHour    int
-	StartMinute  int
-	StartSecond  int
+	StartTime    time.Time
+	CutStartTime time.Time
 	Duration     int
 	isBackground bool
 	Layer        int
