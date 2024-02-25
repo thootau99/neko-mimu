@@ -5,7 +5,9 @@ import "time"
 type VideoContent struct {
 	ContentUri   string
 	StartTime    time.Time
+	EndTime      time.Time
 	CutStartTime time.Time
+	CurEndTime   time.Time
 	Duration     int
 	isBackground bool
 	Layer        int
