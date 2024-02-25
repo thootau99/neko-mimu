@@ -5,7 +5,7 @@ import (
 	TextContent "github.com/thootau/neko-mimu/pkg/textContent"
 	VideoContent "github.com/thootau/neko-mimu/pkg/videoContent"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
-	"log"
+	"log/slog"
 	"strings"
 
 	"github.com/u2takey/go-utils/uuid"
@@ -15,14 +15,14 @@ func ImageToVideoWithSecond(imagePath string, second int) {
 	mp4FilePath := strings.Replace(imagePath, ".jpg", ".mp4", -1)
 	err := ffmpeg.Input(imagePath, ffmpeg.KwArgs{"loop": "1"}).Output(fmt.Sprint(mp4FilePath), ffmpeg.KwArgs{"t": fmt.Sprintf("%d", second)}).OverWriteOutput().ErrorToStdOut().Run()
 	if nil != err {
-		log.Fatal(err)
+		slog.Any("Error", err)
 	}
 }
 
 func generateVideo(contents []VideoContent.VideoContent, subtitles []TextContent.TextContent) {
 	validateResult := VideoContent.ValidateContent(contents)
 	if !validateResult {
-		log.Fatal("Invalid video content: Only one background and one layer one video content are allowed.")
+		slog.Error("Invalid video content: Content validation failed.")
 	}
 	fileUUID := uuid.NewUUID()
 	filePath := fmt.Sprintf("./output/%s.mp4", fileUUID)
@@ -39,7 +39,7 @@ func OverlayVideoOnVideo(frontVideoPath string, backgroundVideoPath string, star
 		}, "overlay", ffmpeg.Args{"1:1"}, ffmpeg.KwArgs{"enable": "gte(t,1)"}).Output(outputPath).OverWriteOutput().ErrorToStdOut().Run()
 
 	if nil != err {
-		log.Fatal(err)
+		slog.Any("Error", err)
 	}
 
 	return outputPath
@@ -49,6 +49,6 @@ func PutTextOnVide(videoPath string, text string, x int, y int) {
 	err := ffmpeg.Input(videoPath).Drawtext("割", 10, 10, true, ffmpeg.KwArgs{"fontfile": "/font/NotoSansCJKjp-Regular.otf", "fontsize": "240"}).Output(videoPath).OverWriteOutput().ErrorToStdOut().Run()
 
 	if nil != err {
-		log.Fatal(err)
+		slog.Any("Error", err)
 	}
 }
