@@ -52,7 +52,7 @@ func ValidateContent(videoContents []VideoContent) bool {
 	if GetLayerOneCount(videoContents) > 1 {
 		slog.Warn("Multiple layer one content detected, some content might not be visible")
 	}
-	if IsBackgroundOverlapping(videoContents) {
+	if IsBackgroundOverlapping(backgrounds) {
 		slog.Warn("Backgrounds overlapping detected, some content might not be visible")
 	}
 	return GetBackgroundContentCount(videoContents) == 1 && GetLayerOneCount(videoContents) == 1
@@ -72,8 +72,7 @@ func GetVideoBackground(videoContents []VideoContent) []VideoContent {
 	return backgrounds
 }
 
-func IsBackgroundOverlapping(videoContents []VideoContent) bool {
-	backgrounds := GetVideoBackground(videoContents)
+func IsBackgroundOverlapping(backgrounds []VideoContent) bool {
 	// Calculate StartTime and duration to check if they are overlapping on editor (StartTime and EndTime)
 	for i := 0; i < len(backgrounds); i++ {
 		for j := i + 1; j < len(backgrounds); j++ {
