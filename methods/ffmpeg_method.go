@@ -2,10 +2,12 @@ package methods
 
 import (
 	"fmt"
+	TextContent "github.com/thootau/neko-mimu/pkg/textContent"
+	VideoContent "github.com/thootau/neko-mimu/pkg/videoContent"
+	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"log"
 	"strings"
 
-	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"github.com/u2takey/go-utils/uuid"
 )
 
@@ -15,6 +17,15 @@ func ImageToVideoWithSecond(imagePath string, second int) {
 	if nil != err {
 		log.Fatal(err)
 	}
+}
+
+func generateVideo(contents []VideoContent.VideoContent, subtitles []TextContent.TextContent) {
+	validateResult := VideoContent.ValidateContent(contents)
+	if !validateResult {
+		log.Fatal("Invalid video content: Only one background and one layer one video content are allowed.")
+	}
+	fileUUID := uuid.NewUUID()
+	filePath := fmt.Sprintf("./output/%s.mp4", fileUUID)
 }
 
 func OverlayVideoOnVideo(frontVideoPath string, backgroundVideoPath string, startSecond int) string {
