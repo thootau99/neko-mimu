@@ -1,7 +1,10 @@
 package videoContent
 
 import (
+	"fmt"
+	"github.com/pkg/errors"
 	"log/slog"
+	"os"
 	"time"
 )
 
@@ -55,6 +58,10 @@ func ValidateContent(videoContents []VideoContent) bool {
 	if IsBackgroundOverlapping(backgrounds) {
 		slog.Warn("Backgrounds overlapping detected, some content might not be visible")
 	}
+	if !IsContentExist(videoContents) {
+		slog.Error("Some content does not exist or the argument is empty, please review previous logs")
+		return false
+	}
 	return GetBackgroundContentCount(videoContents) == 1 && GetLayerOneCount(videoContents) == 1
 }
 
@@ -81,5 +88,20 @@ func IsBackgroundOverlapping(backgrounds []VideoContent) bool {
 			}
 		}
 	}
+	return false
+}
+
+func IsContentExist(videoContents []VideoContent) bool {
+	if len(videoContents) > 0 {
+		// Loop through the videoContents to check if the content exist
+		for _, videoContent := range videoContents {
+			if _, err := os.Stat(videoContent.ContentUri); errors.Is(err, os.ErrNotExist) {
+				slog.Error(fmt.Sprintf("Content %s does not exist", videoContent.ContentUri))
+				return false
+			}
+		}
+		return true
+	}
+	slog.Warn("No content to validate")
 	return false
 }
