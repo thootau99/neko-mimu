@@ -2,10 +2,11 @@ package videoContent
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"log/slog"
 	"os"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 type VideoContent struct {

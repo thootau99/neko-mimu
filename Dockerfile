@@ -11,3 +11,4 @@ COPY . .
 
 RUN go get -u github.com/u2takey/ffmpeg-go
 RUN go get -u github.com/u2takey/go-utils/uuid
+RUN go get -u github.com/pkg/errors
