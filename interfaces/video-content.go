@@ -1,36 +1,30 @@
-package videoContent
+package interfaces
 
 import (
 	"fmt"
 	"log/slog"
 	"os"
-	"time"
 
 	"github.com/pkg/errors"
 )
 
 type VideoContent struct {
-	ContentUri   string
-	StartTime    time.Time
-	EndTime      time.Time
-	CutStartTime time.Time
-	CurEndTime   time.Time
-	Duration     int
-	isBackground bool
+	ContentUri  string
+	StartSecond int
+	EndSecond   int
+	// CutStartTime time.Time // 素材の開始時間
+	// CurEndTime   time.Time
+	// Duration     int
+	IsBackground bool
 	Layer        int
 	Scale        float32
 	Position     Position
 }
 
-type Position struct {
-	x float32
-	y float32
-}
-
 func GetBackgroundContentCount(videoContents []VideoContent) int {
 	count := 0
 	for _, videoContent := range videoContents {
-		if videoContent.isBackground {
+		if videoContent.IsBackground {
 			count++
 		}
 	}
@@ -67,13 +61,13 @@ func ValidateContent(videoContents []VideoContent) bool {
 }
 
 func (videoContent *VideoContent) SetBackground() {
-	videoContent.isBackground = true
+	videoContent.IsBackground = true
 }
 
 func GetVideoBackground(videoContents []VideoContent) []VideoContent {
 	var backgrounds []VideoContent
 	for _, videoContent := range videoContents {
-		if videoContent.isBackground {
+		if videoContent.IsBackground {
 			backgrounds = append(backgrounds, videoContent)
 		}
 	}
@@ -84,9 +78,9 @@ func IsBackgroundOverlapping(backgrounds []VideoContent) bool {
 	// Calculate StartTime and duration to check if they are overlapping on editor (StartTime and EndTime)
 	for i := 0; i < len(backgrounds); i++ {
 		for j := i + 1; j < len(backgrounds); j++ {
-			if backgrounds[i].StartTime.Before(backgrounds[j].EndTime) && backgrounds[i].EndTime.After(backgrounds[j].StartTime) {
-				return true
-			}
+			// if backgrounds[i].StartTime.Before(backgrounds[j].EndTime) && backgrounds[i].EndTime.After(backgrounds[j].StartTime) {
+			// return true
+			// }
 		}
 	}
 	return false
