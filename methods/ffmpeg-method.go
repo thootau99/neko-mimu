@@ -20,7 +20,7 @@ func GenerateVideo(request *interfaces.GenerateVideoRequest) string {
 	// }
 	backgroundStream := backgroundImageToVideoWithSecond(request.Background.ContentUri, request.Background.EndSecond-request.Background.StartSecond)
 	for _, videoContent := range request.Contents {
-		backgroundStream = OverlayVideoOnVideo(videoContent.ContentUri, backgroundStream, videoContent.StartSecond)
+		backgroundStream = OverlayVideoOnVideo(&videoContent, backgroundStream)
 	}
 
 	fileUUID := uuid.NewUUID()
@@ -30,15 +30,17 @@ func GenerateVideo(request *interfaces.GenerateVideoRequest) string {
 	return filePath
 }
 
-func OverlayVideoOnVideo(frontVideoPath string, backgroundVideoStream *ffmpeg.Stream, startSecond int) *ffmpeg.Stream {
+func OverlayVideoOnVideo(videoContent *interfaces.VideoContent, backgroundVideoStream *ffmpeg.Stream) *ffmpeg.Stream {
 	// outputFileNameUUID := uuid.NewUUID()
 	// outputPath := fmt.Sprintf("./output/%s.mp4", outputFileNameUUID)
-	overlay := ffmpeg.Input(frontVideoPath).Filter("colorkey", ffmpeg.Args{"0x4fff00:0.1:0.2"})
+	overlay := ffmpeg.Input(videoContent.ContentUri).Filter("colorkey", ffmpeg.Args{"0x4fff00:0.1:0.2"})
 	return ffmpeg.Filter(
 		[]*ffmpeg.Stream{
 			backgroundVideoStream,
 			overlay,
-		}, "overlay", ffmpeg.Args{"1:1"}, ffmpeg.KwArgs{"enable": "gte(t,1)"})
+		}, "overlay", ffmpeg.Args{
+			fmt.Sprintf("%f:%f", videoContent.Position.X, videoContent.Position.Y), // 素材が置くべき座標
+		}, ffmpeg.KwArgs{"enable": fmt.Sprintf("gte(t,%d)", videoContent.StartSecond)})
 }
 
 func PutTextOnVide(video *ffmpeg.Stream, text string, x int, y int) *ffmpeg.Stream {
